@@ -1,0 +1,9 @@
+Segment,Phase_or_Style,Department,RR_Value_Per_Ball,League_Avg_Value,Net_Surplus_Deficit,Status,Sample_Balls,Key_Personnel,Tactical_Action
+Batting - Powerplay,Powerplay (Overs 1-6),Batting,0.25,0.06,0.19,Elite Surplus,420,"Vaibhav Sooryavanshi, Yashasvi Jaiswal",Preserve & Anchor. Do not allocate auction budget here.
+Batting - Middle Overs,Middle Overs (Overs 7-15),Batting,-0.04,0.02,-0.06,Vulnerability,580,"Sanju Samson, Riyan Parag",Target Josh Inglis / Heinrich Klaasen to stop middle deceleration.
+Batting - Death Overs,Death Overs (Overs 16-20),Batting,-0.11,-0.01,-0.1,Severe Bleed,390,"Shimron Hetmyer (90th), Parag (91st), Jadeja (98th)",CRITICAL AUCTION PRIORITY: Sign Tim David or Ashutosh Sharma.
+Bowling - Powerplay,Powerplay (Overs 1-6),Bowling,0.04,0.05,-0.01,Competitive Par,450,"Trent Boult, Sandeep Sharma",Stable baseline; maintain existing personnel.
+Bowling - Middle Overs,Middle Overs (Overs 7-15),Bowling,-0.08,-0.02,-0.06,Vulnerability,560,Ravi Bishnoi (138th rank under pressure),Overhaul spin unit: Target Varun Chakravarthy or Kuldeep Yadav.
+Bowling - Death Overs,Death Overs (Overs 16-20),Bowling,-0.06,0.13,-0.19,Critical Bleed,410,"Jofra Archer (14th, isolated without support)",CRITICAL AUCTION PRIORITY: Acquire Mustafizur Rahman or Nathan Ellis.
+Bowling - Pace Attack,Pace Bowlers (All Phases),Bowling,-0.02,0.02,-0.04,Competitive Par,850,"Jofra Archer, Sandeep Sharma",Need 1 elite overseas death bowler to complete world-class pairing.
+Bowling - Spin Attack,Spin Bowlers (All Phases),Bowling,-0.16,0.0,-0.16,Critical Bleed,570,"Ravi Bishnoi (138th of 143), Wanindu Hasaranga",Spin attack fails under pressure; must draft top-tier mystery spin.

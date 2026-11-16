@@ -1,0 +1,245 @@
+// ============================================================================
+// RAJASTHAN ROYALS WAR ROOM - COMPLETE DAX MEASURES LIBRARY
+// SupeRR Selector Season 2: Identifying Pressure Players for IPL 2027 Auction
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// SECTION 1: VOLUME & AGGREGATION MEASURES
+// ----------------------------------------------------------------------------
+
+// Total Deliveries Analyzed
+Total Deliveries = COUNTROWS('Fact_Deliveries')
+
+// Total Matches
+Total Matches = DISTINCTCOUNT('Fact_Deliveries'[match_id])
+
+// Pressure Balls Count (Balls flagged in Top Quartile of Leverage Index)
+Pressure Deliveries = 
+CALCULATE(
+    COUNTROWS('Fact_Deliveries'),
+    'Fact_Deliveries'[is_pressure_ball] = TRUE()
+)
+
+// Pressure Ball % of Total Deliveries
+Pressure Ball Pct = 
+DIVIDE([Pressure Deliveries], [Total Deliveries], 0)
+
+// ----------------------------------------------------------------------------
+// SECTION 2: BATTING UNDER PRESSURE MEASURES
+// ----------------------------------------------------------------------------
+
+// Pressure Balls Faced by Striker
+Pressure Balls Faced = 
+CALCULATE(
+    COUNTROWS('Fact_Deliveries'),
+    'Fact_Deliveries'[is_pressure_ball] = TRUE(),
+    'Fact_Deliveries'[extras_type] <> "wide"
+)
+
+// Pressure Runs Scored
+Pressure Runs Scored = 
+CALCULATE(
+    SUM('Fact_Deliveries'[runs]),
+    'Fact_Deliveries'[is_pressure_ball] = TRUE()
+)
+
+// Pressure Strike Rate (SR)
+Pressure Strike Rate = 
+DIVIDE([Pressure Runs Scored], [Pressure Balls Faced], 0) * 100
+
+// Baseline Strike Rate (Non-Pressure Balls)
+Baseline Strike Rate = 
+VAR NormalRuns = CALCULATE(SUM('Fact_Deliveries'[runs]), 'Fact_Deliveries'[is_pressure_ball] = FALSE())
+VAR NormalBalls = CALCULATE(COUNTROWS('Fact_Deliveries'), 'Fact_Deliveries'[is_pressure_ball] = FALSE(), 'Fact_Deliveries'[extras_type] <> "wide")
+RETURN
+DIVIDE(NormalRuns, NormalBalls, 0) * 100
+
+// Pressure SR Delta (Nerve Differential)
+Pressure SR Delta = [Pressure Strike Rate] - [Baseline Strike Rate]
+
+// Dismissals Under Pressure
+Pressure Dismissals = 
+CALCULATE(
+    COUNTROWS('Fact_Deliveries'),
+    'Fact_Deliveries'[is_pressure_ball] = TRUE(),
+    'Fact_Deliveries'[is_wicket] = TRUE()
+)
+
+// Balls Per Dismissal Under Pressure
+Balls Per Dismissal Pressure = 
+DIVIDE([Pressure Balls Faced], [Pressure Dismissals], BLANK())
+
+// Dot Ball % Under Pressure (Batting)
+Dot Ball Pct Batting Pressure = 
+VAR Dots = CALCULATE(
+    COUNTROWS('Fact_Deliveries'),
+    'Fact_Deliveries'[is_pressure_ball] = TRUE(),
+    'Fact_Deliveries'[runs] = 0,
+    'Fact_Deliveries'[is_four] = FALSE(),
+    'Fact_Deliveries'[is_six] = FALSE(),
+    'Fact_Deliveries'[extras_type] <> "wide"
+)
+RETURN
+DIVIDE(Dots, [Pressure Balls Faced], 0)
+
+// Boundary % Under Pressure (Batting)
+Boundary Pct Pressure = 
+VAR Boundaries = CALCULATE(
+    COUNTROWS('Fact_Deliveries'),
+    'Fact_Deliveries'[is_pressure_ball] = TRUE(),
+    'Fact_Deliveries'[is_four] = TRUE() || 'Fact_Deliveries'[is_six] = TRUE()
+)
+RETURN
+DIVIDE(Boundaries, [Pressure Balls Faced], 0)
+
+// Death Overs Batting Share Under Pressure
+Death Overs Batting Share Pct = 
+VAR DeathBalls = CALCULATE(
+    COUNTROWS('Fact_Deliveries'),
+    'Fact_Deliveries'[is_pressure_ball] = TRUE(),
+    'Fact_Deliveries'[overid] >= 16
+)
+RETURN
+DIVIDE(DeathBalls, [Pressure Balls Faced], 0)
+
+
+// ----------------------------------------------------------------------------
+// SECTION 3: BOWLING UNDER PRESSURE MEASURES
+// ----------------------------------------------------------------------------
+
+// Legal Balls Bowled Under Pressure
+Pressure Legal Balls Bowled = 
+CALCULATE(
+    COUNTROWS('Fact_Deliveries'),
+    'Fact_Deliveries'[is_pressure_ball] = TRUE(),
+    NOT('Fact_Deliveries'[extras_type] IN {"wide", "Overstep"})
+)
+
+// Pressure Runs Conceded by Bowler
+Pressure Runs Conceded = 
+CALCULATE(
+    SUM('Fact_Deliveries'[runs]) + 
+    SUMX(
+        FILTER('Fact_Deliveries', 'Fact_Deliveries'[extras_type] IN {"wide", "Overstep"}),
+        MAX(1, 'Fact_Deliveries'[extras1_runs] + 'Fact_Deliveries'[extras_2_runs])
+    ),
+    'Fact_Deliveries'[is_pressure_ball] = TRUE()
+)
+
+// Pressure Economy Rate
+Pressure Economy Rate = 
+DIVIDE([Pressure Runs Conceded], [Pressure Legal Balls Bowled], 0) * 6
+
+// Baseline Economy Rate
+Baseline Economy Rate = 
+VAR NormRuns = CALCULATE(
+    SUM('Fact_Deliveries'[runs]) + 
+    SUMX(
+        FILTER('Fact_Deliveries', 'Fact_Deliveries'[extras_type] IN {"wide", "Overstep"}),
+        MAX(1, 'Fact_Deliveries'[extras1_runs] + 'Fact_Deliveries'[extras_2_runs])
+    ),
+    'Fact_Deliveries'[is_pressure_ball] = FALSE()
+)
+VAR NormBalls = CALCULATE(
+    COUNTROWS('Fact_Deliveries'),
+    'Fact_Deliveries'[is_pressure_ball] = FALSE(),
+    NOT('Fact_Deliveries'[extras_type] IN {"wide", "Overstep"})
+)
+RETURN
+DIVIDE(NormRuns, NormBalls, 0) * 6
+
+// Pressure Economy Delta (Negative is Great!)
+Pressure Economy Delta = [Pressure Economy Rate] - [Baseline Economy Rate]
+
+// Pressure Wickets Taken (Bowler-credited)
+Pressure Wickets = 
+CALCULATE(
+    COUNTROWS('Fact_Deliveries'),
+    'Fact_Deliveries'[is_pressure_ball] = TRUE(),
+    'Fact_Deliveries'[is_wicket] = TRUE(),
+    NOT('Fact_Deliveries'[dismissal_type] IN {"Run Out", "Retired Hurt", "Retired Out", "Obstructing the field"})
+)
+
+// Balls Per Wicket Under Pressure
+Balls Per Wicket Pressure = 
+DIVIDE([Pressure Legal Balls Bowled], [Pressure Wickets], BLANK())
+
+// Dot Ball % Under Pressure (Bowling)
+Dot Ball Pct Bowling Pressure = 
+VAR Dots = CALCULATE(
+    COUNTROWS('Fact_Deliveries'),
+    'Fact_Deliveries'[is_pressure_ball] = TRUE(),
+    'Fact_Deliveries'[runs] = 0,
+    NOT('Fact_Deliveries'[extras_type] IN {"wide", "Overstep"})
+)
+RETURN
+DIVIDE(Dots, [Pressure Legal Balls Bowled], 0)
+
+// Death Overs Bowling Share Under Pressure
+Death Overs Bowling Share Pct = 
+VAR DeathBalls = CALCULATE(
+    COUNTROWS('Fact_Deliveries'),
+    'Fact_Deliveries'[is_pressure_ball] = TRUE(),
+    'Fact_Deliveries'[overid] >= 16,
+    NOT('Fact_Deliveries'[extras_type] IN {"wide", "Overstep"})
+)
+RETURN
+DIVIDE(DeathBalls, [Pressure Legal Balls Bowled], 0)
+
+
+// ----------------------------------------------------------------------------
+// SECTION 4: RAJASTHAN ROYALS SQUAD GAP & SURPLUS MEASURES
+// ----------------------------------------------------------------------------
+
+// RR Net Pressure Surplus/Deficit (from RR_Squad_Diagnostics)
+RR Net Surplus Deficit = 
+SUM('RR_Squad_Diagnostics'[Net_Surplus_Deficit])
+
+// RR Powerplay Value
+RR PP Batting Value = 
+CALCULATE(
+    AVERAGE('RR_Squad_Diagnostics'[RR_Value_Per_Ball]),
+    'RR_Squad_Diagnostics'[Segment] = "Batting - Powerplay"
+)
+
+// RR Death Bowling Deficit
+RR Death Bowling Gap = 
+CALCULATE(
+    AVERAGE('RR_Squad_Diagnostics'[Net_Surplus_Deficit]),
+    'RR_Squad_Diagnostics'[Segment] = "Bowling - Death Overs"
+)
+
+// RR Spin Bowling Deficit
+RR Spin Bowling Gap = 
+CALCULATE(
+    AVERAGE('RR_Squad_Diagnostics'[Net_Surplus_Deficit]),
+    'RR_Squad_Diagnostics'[Segment] = "Bowling - Spin Attack"
+)
+
+
+// ----------------------------------------------------------------------------
+// SECTION 5: AUCTION SIMULATION & SELECTION MEASURES
+// ----------------------------------------------------------------------------
+
+// Total Target Allocation Budget (Cr)
+Total Target Purse Allocated = 
+SUM('RR_Auction_Target_Board'[Est_Auction_Price_Cr])
+
+// Remaining Hypothetical Purse (Out of 120 Cr total budget or 25 Cr available)
+Hypothetical Purse Remaining = 
+120.0 - [Total Target Purse Allocated]
+
+// Count of Primary Targets
+Count Primary Targets = 
+CALCULATE(
+    COUNTROWS('RR_Auction_Target_Board'),
+    'RR_Auction_Target_Board'[Target_Priority] = "Tier 1 Priority"
+)
+
+// Average Pressure Score of Targets
+Avg Target Pressure Score = 
+AVERAGE('RR_Auction_Target_Board'[Pressure_Score_Z])
+
+// Dynamic Color Indicator for Surplus vs Deficit
+KPI Surplus Color = 
+IF([RR Net Surplus Deficit] >= 0, "#10B981", "#EF4444")

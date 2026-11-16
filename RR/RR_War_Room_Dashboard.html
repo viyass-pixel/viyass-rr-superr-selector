@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rajasthan Royals War Room | SupeRR Selector S2</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Google Fonts: Inter & Rajdhani -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            rr: {
+              pink: '#EA1A85',
+              darkpink: '#C2136C',
+              navy: '#001D4A',
+              deepnavy: '#050B1A',
+              card: '#0D182E',
+              border: '#1E2D4A',
+              gold: '#F5A623',
+              cyan: '#00D2FF',
+              success: '#10B981',
+              danger: '#EF4444'
+            }
+          },
+          fontFamily: {
+            heading: ['Rajdhani', 'sans-serif'],
+            sans: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #050B1A;
+      color: #F8FAFC;
+      font-family: 'Inter', sans-serif;
+    }
+    .rr-glow {
+      box-shadow: 0 0 25px rgba(234, 26, 133, 0.25);
+    }
+    .rr-glow-cyan {
+      box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #0A1128;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #1E2D4A;
+      border-radius: 3px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #EA1A85;
+    }
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .page-break {
+        page-break-after: always;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- TOP BRANDING & NAVIGATION HEADER -->
+  <header class="bg-[#081226] border-b border-rr-border sticky top-0 z-50 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Left: Logo & Title -->
+        <div class="flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-rr-pink to-rr-darkpink flex items-center justify-center font-heading font-extrabold text-2xl text-white shadow-md rr-glow">
+            RR
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs font-semibold uppercase tracking-wider text-rr-pink bg-rr-pink/10 px-2 py-0.5 rounded border border-rr-pink/30">WAR ROOM INTELLIGENCE</span>
+              <span class="text-xs font-medium text-slate-400">SupeRR Selector Season 2</span>
+            </div>
+            <h1 class="font-heading text-2xl font-bold tracking-wide text-white flex items-center">
+              PRESSURE RATING & AUCTION WAR ROOM
+              <span class="ml-2 text-rr-gold text-sm font-sans font-semibold border border-rr-gold/40 px-2 py-0.5 rounded-full bg-rr-gold/10">IPL 2027</span>
+            </h1>
+          </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="hidden md:flex space-x-1 no-print">
+          <button onclick="switchTab('overview')" id="tab-overview" class="tab-btn px-3 py-2 rounded-lg text-sm font-medium transition-all text-white bg-rr-pink shadow-sm">
+            1. Overview
+          </button>
+          <button onclick="switchTab('diagnostic')" id="tab-diagnostic" class="tab-btn px-3 py-2 rounded-lg text-sm font-medium transition-all text-slate-300 hover:text-white hover:bg-rr-navy">
+            2. RR Squad Audit
+          </button>
+          <button onclick="switchTab('batters')" id="tab-batters" class="tab-btn px-3 py-2 rounded-lg text-sm font-medium transition-all text-slate-300 hover:text-white hover:bg-rr-navy">
+            3. Top Batters
+          </button>
+          <button onclick="switchTab('bowlers')" id="tab-bowlers" class="tab-btn px-3 py-2 rounded-lg text-sm font-medium transition-all text-slate-300 hover:text-white hover:bg-rr-navy">
+            4. Top Bowlers
+          </button>
+          <button onclick="switchTab('auction')" id="tab-auction" class="tab-btn px-3 py-2 rounded-lg text-sm font-medium transition-all text-slate-300 hover:text-white hover:bg-rr-navy">
+            5. Auction Planner
+          </button>
+        </nav>
+
+        <!-- Right: Print / Submission Action -->
+        <div class="flex items-center space-x-3 no-print">
+          <button onclick="window.print()" class="flex items-center space-x-2 px-3.5 py-2 bg-rr-card border border-rr-border hover:border-rr-pink rounded-lg text-xs font-semibold text-slate-200 transition-all">
+            <svg class="w-4 h-4 text-rr-pink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+            </svg>
+            <span>Export / Print PDF</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN DASHBOARD CONTENT CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- =================================================================== -->
+    <!-- TAB 1: EXECUTIVE OVERVIEW & METHODOLOGY -->
+    <!-- =================================================================== -->
+    <div id="content-overview" class="tab-content space-y-6">
+      
+      <!-- Top Banner Alert -->
+      <div class="bg-gradient-to-r from-rr-navy via-[#0C1B3A] to-rr-deepnavy border-l-4 border-rr-pink rounded-xl p-5 shadow-md flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <span class="text-xs uppercase tracking-wider font-bold text-rr-pink">Executive Problem Statement & Methodology</span>
+          <h2 class="text-xl font-heading font-bold text-white mt-1">Who Holds Their Nerve Under High Leverage?</h2>
+          <p class="text-xs text-slate-300 mt-1 max-w-3xl leading-relaxed">
+            Raw pressure numbers without context are 90% random noise. Our model evaluates 184,944 deliveries across 804 clean matches (IPL & T20I, 2022–2026), isolating the top 25% highest Leverage Index deliveries. We anchor player performance on true baseline talent with Empirical-Bayes shrinkage (K=400 balls) to deliver repeatable, battle-tested targets for the Rajasthan Royals 2027 auction.
+          </p>
+        </div>
+        <div class="flex items-center space-x-3 shrink-0">
+          <div class="text-right">
+            <div class="text-xs text-slate-400">Split-Half Reliability</div>
+            <div class="text-lg font-bold text-rr-success">ρ = +0.29</div>
+            <div class="text-[10px] text-slate-500">vs -0.12 naive model</div>
+          </div>
+          <div class="h-10 w-px bg-rr-border"></div>
+          <div class="text-right">
+            <div class="text-xs text-slate-400">Win Prob AUC</div>
+            <div class="text-lg font-bold text-rr-cyan">0.89 (Chase)</div>
+            <div class="text-[10px] text-slate-500">0.68 (1st Inns)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Core Metric KPI Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-rr-card border border-rr-border rounded-xl p-5 shadow-sm relative overflow-hidden group hover:border-rr-pink/50 transition-all">
+          <div class="absolute -right-2 -bottom-2 text-rr-border/20 text-6xl font-heading font-bold pointer-events-none">804</div>
+          <div class="text-xs font-semibold uppercase text-slate-400 tracking-wide">Matches Analyzed</div>
+          <div class="text-3xl font-heading font-extrabold text-white mt-1">804 <span class="text-xs font-normal text-slate-400">Cleaned</span></div>
+          <div class="text-xs text-slate-300 mt-2 flex items-center">
+            <span class="inline-block w-2 h-2 rounded-full bg-rr-pink mr-1.5"></span>
+            380 IPL/T20 + 424 T20I (2022-26)
+          </div>
+        </div>
+
+        <div class="bg-rr-card border border-rr-border rounded-xl p-5 shadow-sm relative overflow-hidden group hover:border-rr-pink/50 transition-all">
+          <div class="absolute -right-2 -bottom-2 text-rr-border/20 text-6xl font-heading font-bold pointer-events-none">25%</div>
+          <div class="text-xs font-semibold uppercase text-slate-400 tracking-wide">Pressure Balls Volume</div>
+          <div class="text-3xl font-heading font-extrabold text-rr-pink mt-1">46,236 <span class="text-xs font-normal text-slate-400">Balls</span></div>
+          <div class="text-xs text-slate-300 mt-2 flex items-center">
+            <span class="inline-block w-2 h-2 rounded-full bg-rr-gold mr-1.5"></span>
+            Top 25% Leverage Index (LI ≥ 0.0209)
+          </div>
+        </div>
+
+        <div class="bg-rr-card border border-rr-border rounded-xl p-5 shadow-sm relative overflow-hidden group hover:border-rr-pink/50 transition-all">
+          <div class="absolute -right-2 -bottom-2 text-rr-border/20 text-6xl font-heading font-bold pointer-events-none">3.8x</div>
+          <div class="text-xs font-semibold uppercase text-slate-400 tracking-wide">Leverage Multiplier</div>
+          <div class="text-3xl font-heading font-extrabold text-rr-cyan mt-1">3.56% <span class="text-xs font-normal text-slate-400">Swing/Ball</span></div>
+          <div class="text-xs text-slate-300 mt-2 flex items-center">
+            <span class="inline-block w-2 h-2 rounded-full bg-rr-cyan mr-1.5"></span>
+            3.8x higher win impact than normal (0.95%)
+          </div>
+        </div>
+
+        <div class="bg-rr-card border border-rr-border rounded-xl p-5 shadow-sm relative overflow-hidden group hover:border-rr-pink/50 transition-all">
+          <div class="absolute -right-2 -bottom-2 text-rr-border/20 text-6xl font-heading font-bold pointer-events-none">+56%</div>
+          <div class="text-xs font-semibold uppercase text-slate-400 tracking-wide">Wicket Hazard Under Pressure</div>
+          <div class="text-3xl font-heading font-extrabold text-rr-gold mt-1">5.86% <span class="text-xs font-normal text-slate-400">Wkt/Ball</span></div>
+          <div class="text-xs text-slate-300 mt-2 flex items-center">
+            <span class="inline-block w-2 h-2 rounded-full bg-rr-success mr-1.5"></span>
+            1 dismissal every 17 balls (vs 20 ordinary)
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row: Separation of Pressure vs Normal & Distribution -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left: Pressure vs Ordinary Play Separation Chart -->
+        <div class="lg:col-span-2 bg-rr-card border border-rr-border rounded-xl p-5 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-heading text-lg font-bold text-white">How Pressure Separates From Ordinary Match Play</h3>
+              <p class="text-xs text-slate-400">Comparison of key match dynamics across Ordinary vs Pressure-flagged deliveries</p>
+            </div>
+            <span class="text-xs bg-rr-pink/10 text-rr-pink border border-rr-pink/20 px-2.5 py-1 rounded-md font-semibold">Validation Proof</span>
+          </div>
+          <div class="h-64">
+            <canvas id="pressureSeparationChart"></canvas>
+          </div>
+          <div class="grid grid-cols-4 gap-2 mt-4 pt-3 border-t border-rr-border text-center text-xs">
+            <div>
+              <span class="text-slate-400 block">Balls Left</span>
+              <span class="font-bold text-white">30 vs 68</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block">Wickets Down</span>
+              <span class="font-bold text-white">4.8 vs 2.1</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block">Chase RRR</span>
+              <span class="font-bold text-rr-pink">18.9 vs 8.9</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block">Batting Win Prob</span>
+              <span class="font-bold text-rr-gold">28% vs 54%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Pressure Share by Innings & Phase -->
+        <div class="bg-rr-card border border-rr-border rounded-xl p-5 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-heading text-lg font-bold text-white">Pressure Context Distribution</h3>
+              <span class="text-xs text-slate-400">Where Pressure Occurs</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="pressureDistributionChart"></canvas>
+            </div>
+          </div>
+
+          <div class="space-y-2 mt-3 pt-3 border-t border-rr-border text-xs">
+            <div class="flex justify-between items-center text-slate-300">
+              <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-rr-pink mr-2"></span>2nd Innings (Chase Stress)</span>
+              <span class="font-bold text-white">61.0%</span>
+            </div>
+            <div class="flex justify-between items-center text-slate-300">
+              <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-rr-navy mr-2"></span>1st Innings (Collapse / Death)</span>
+              <span class="font-bold text-white">39.0%</span>
+            </div>
+            <div class="p-2.5 rounded-lg bg-[#070E20] border border-rr-border text-[11px] text-slate-300 leading-snug">
+              <strong class="text-rr-gold">Innings 2 Dominance:</strong> Chases produce high leverage because the target is known and every boundary directly lowers required run rate.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Methodology Component Breakdown Table -->
+      <div class="bg-rr-card border border-rr-border rounded-xl p-5 shadow-sm">
+        <h3 class="font-heading text-lg font-bold text-white mb-1">Model Architecture: Why This Ranking Repeats Across Seasons</h3>
+        <p class="text-xs text-slate-400 mb-4">Weights derived from out-of-sample split-half reliability optimization</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-4 rounded-xl bg-[#070E20] border border-rr-border">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-bold text-rr-cyan text-sm">1. Expected Pressure Value</span>
+              <span class="px-2 py-0.5 rounded bg-rr-cyan/10 text-rr-cyan font-bold">75% Weight</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Overall baseline skill (<span class="text-white font-mono">K₀=60</span>) plus an Empirical-Bayes shrunk pressure deviation:
+              <br><code class="text-rr-gold text-[11px] mt-1 block">Score = Base + n/(n+400) × (Pressure RV - Base)</code>
+              Prevents small-sample flukes from topping the table.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[#070E20] border border-rr-border">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-bold text-rr-pink text-sm">2. Pressure Rating (PR)</span>
+              <span class="px-2 py-0.5 rounded bg-rr-pink/10 text-rr-pink font-bold">15% Weight</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Win-Probability Conversion: Sum of Win Probability Added (<span class="text-white font-mono">WPA</span>) divided by sum of available Leverage Index (<span class="text-white font-mono">LI</span>) faced by the player, shrunk with half a median player's leverage mass.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[#070E20] border border-rr-border">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-bold text-rr-gold text-sm">3. Consistency & Floor</span>
+              <span class="px-2 py-0.5 rounded bg-rr-gold/10 text-rr-gold font-bold">10% Weight</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Combination of positive impact rate (% of pressure innings with <span class="text-white font-mono">RV ≥ 0</span>, shrunk to 50% with 8 pseudo-innings) and the 25th-percentile "bad day floor" to protect RR against volatility.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- TAB 2: RAJASTHAN ROYALS SQUAD AUDIT & GAPS -->
+    <!-- =================================================================== -->
+    <div id="content-diagnostic" class="tab-content space-y-6 hidden">
+      
+      <!-- Callout Header -->
+      <div class="bg-gradient-to-r from-red-950/40 via-rr-card to-rr-deepnavy border-l-4 border-rr-danger rounded-xl p-5 shadow-md">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <span class="text-xs uppercase tracking-wider font-bold text-rr-danger">Rajasthan Royals Pressure Audit (IPL 2024–2026 Deliveries)</span>
+            <h2 class="text-xl font-heading font-bold text-white mt-1">Diagnostic: Where Does RR Bleed Runs Under Pressure?</h2>
+            <p class="text-xs text-slate-300 mt-1 max-w-3xl leading-relaxed">
+              Profiling RR's own pressure deliveries reveals a glaring paradox: <strong class="text-white">RR is the best Powerplay batting team in the IPL</strong>, but suffers disastrous drop-offs at the <strong class="text-rr-danger">Death (Bowling & Batting)</strong> and in <strong class="text-rr-danger">Spin Bowling</strong>. Auction strategy must be 100% targeted to seal these two specific leaks.
+            </p>
+          </div>
+          <div class="shrink-0 p-3 bg-red-900/20 border border-red-500/30 rounded-xl text-center">
+            <span class="text-[10px] text-red-300 uppercase tracking-wider font-bold block">Critical Deficit</span>
+            <span class="text-2xl font-heading font-extrabold text-rr-danger">-0.19</span>
+            <span class="text-[10px] text-slate-400 block">runs/ball at death bowling</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Audit Chart: Surplus vs Deficit by Phase & Department -->
+      <div class="bg-rr-card border border-rr-border rounded-xl p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="font-heading text-lg font-bold text-white">RR Net Value Differential vs League Benchmark (Runs / Ball)</h3>
+            <p class="text-xs text-slate-400">Green = Advantage over league | Red = Severe vulnerability requiring auction intervention</p>
+          </div>
+          <span class="text-xs font-semibold text-slate-300 bg-rr-navy px-3 py-1 rounded-md border border-rr-border">
+            Baseline: League Avg = 0.00
+          </span>
+        </div>
+        <div class="h-72">
+          <canvas id="rrDiagnosticChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Detailed Breakdown Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Powerplay Batting (Surplus) -->
+        <div class="bg-rr-card border border-rr-border rounded-xl p-4 flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-start">
+              <span class="text-xs font-semibold text-slate-400">Powerplay Batting</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-500/10 text-green-400 border border-green-500/20">ELITE SURPLUS</span>
+            </div>
+            <div class="text-2xl font-heading font-bold text-green-400 mt-2">+0.19 <span class="text-xs text-slate-400 font-normal">runs/ball</span></div>
+            <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+              RR scores +0.25 vs league +0.06. Vaibhav Sooryavanshi (#1 in model) and Jaiswal dominate.
+            </p>
+          </div>
+          <div class="mt-3 pt-3 border-t border-rr-border text-[11px] font-semibold text-green-300">
+            Action: Retain & Anchor. Zero auction capital required.
+          </div>
+        </div>
+
+        <!-- Death Bowling (Critical Bleed) -->
+        <div class="bg-rr-card border border-red-500/30 rounded-xl p-4 flex flex-col justify-between bg-gradient-to-b from-rr-card to-red-950/20">
+          <div>
+            <div class="flex justify-between items-start">
+              <span class="text-xs font-semibold text-slate-400">Death Bowling (16-20)</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20">CRITICAL BLEED</span>
+            </div>
+            <div class="text-2xl font-heading font-bold text-rr-danger mt-2">-0.19 <span class="text-xs text-slate-400 font-normal">runs/ball</span></div>
+            <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+              RR concedes -0.06 vs league +0.13 (1.7 std error gap). Jofra Archer (14th) is completely isolated.
+            </p>
+          </div>
+          <div class="mt-3 pt-3 border-t border-rr-border text-[11px] font-semibold text-red-300">
+            Action: Must draft Mustafizur Rahman or Nathan Ellis.
+          </div>
+        </div>
+
+        <!-- Spin Bowling (Critical Bleed) -->
+        <div class="bg-rr-card border border-red-500/30 rounded-xl p-4 flex flex-col justify-between bg-gradient-to-b from-rr-card to-red-950/20">
+          <div>
+            <div class="flex justify-between items-start">
+              <span class="text-xs font-semibold text-slate-400">Spin Bowling</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20">CRITICAL BLEED</span>
+            </div>
+            <div class="text-2xl font-heading font-bold text-rr-danger mt-2">-0.16 <span class="text-xs text-slate-400 font-normal">runs/ball</span></div>
+            <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+              RR spin scores -0.16 vs league 0.00. Ravi Bishnoi sits at 138th rank among 143 eligible bowlers.
+            </p>
+          </div>
+          <div class="mt-3 pt-3 border-t border-rr-border text-[11px] font-semibold text-red-300">
+            Action: Sign Varun Chakravarthy or Rashid Khan.
+          </div>
+        </div>
+
+        <!-- Death Batting (Severe Vulnerability) -->
+        <div class="bg-rr-card border border-rr-border rounded-xl p-4 flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-start">
+              <span class="text-xs font-semibold text-slate-400">Death Batting (16-20)</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">SEVERE DROP-OFF</span>
+            </div>
+            <div class="text-2xl font-heading font-bold text-amber-400 mt-2">-0.10 <span class="text-xs text-slate-400 font-normal">runs/ball</span></div>
+            <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+              Finishers collapse under pressure: Hetmyer (90th), Riyan Parag (91st), Jadeja (98th).
+            </p>
+          </div>
+          <div class="mt-3 pt-3 border-t border-rr-border text-[11px] font-semibold text-amber-300">
+            Action: Primary overseas target must be Tim David.
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- TAB 3: TOP PRESSURE BATTERS -->
+    <!-- =================================================================== -->
+    <div id="content-batters" class="tab-content space-y-6 hidden">
+      
+      <!-- Filter Bar & Search -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-rr-card p-4 rounded-xl border border-rr-border">
+        <div>
+          <h3 class="font-heading text-lg font-bold text-white">Elite Pressure Batters Ranking (Top 12)</h3>
+          <p class="text-xs text-slate-400">Eligible pool: Min 120 pressure balls across 12+ pressure innings</p>
+        </div>
+        <div class="flex items-center space-x-3 w-full sm:w-auto">
+          <select id="batterRoleFilter" onchange="filterBattersTable()" class="bg-[#070E20] border border-rr-border text-xs rounded-lg px-3 py-2 text-white focus:outline-none focus:border-rr-pink">
+            <option value="ALL">All Roles</option>
+            <option value="Powerplay Aggressor">Powerplay Aggressor</option>
+            <option value="Middle-Order Stabiliser">Middle-Order Stabiliser</option>
+            <option value="Death Finisher">Death Finisher</option>
+          </select>
+          <input type="text" id="batterSearch" onkeyup="filterBattersTable()" placeholder="Search batter..." class="bg-[#070E20] border border-rr-border text-xs rounded-lg px-3 py-2 text-white focus:outline-none focus:border-rr-pink w-full sm:w-48">
+        </div>
+      </div>
+
+      <!-- Scatter Chart: Strike Rate vs Run Value Added -->
+      <div class="bg-rr-card border border-rr-border rounded-xl p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-2">
+          <h4 class="font-heading text-md font-bold text-white">Pressure Efficiency Matrix: Strike Rate vs Expected Run Value</h4>
+          <span class="text-xs text-slate-400">Bubble size = Sample size (Pressure balls)</span>
+        </div>
+        <div class="h-64">
+          <canvas id="batterScatterChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Batters Leaderboard Table -->
+      <div class="bg-rr-card border border-rr-border rounded-xl overflow-hidden shadow-sm">
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-[#081226] text-slate-400 border-b border-rr-border font-semibold uppercase tracking-wider">
+                <th class="py-3 px-3">#</th>
+                <th class="py-3 px-4">Player</th>
+                <th class="py-3 px-3">Role</th>
+                <th class="py-3 px-3 text-right">Score (z)</th>
+                <th class="py-3 px-3 text-right">Pressure Balls</th>
+                <th class="py-3 px-3 text-right">Pressure SR</th>
+                <th class="py-3 px-3 text-right">Balls/Out</th>
+                <th class="py-3 px-3 text-right">SR vs Pace</th>
+                <th class="py-3 px-3 text-right">SR vs Spin</th>
+                <th class="py-3 px-3 text-right">Consistency %</th>
+                <th class="py-3 px-3 text-right">Bootstrap %</th>
+                <th class="py-3 px-4">Strategic Fit for RR</th>
+              </tr>
+            </thead>
+            <tbody id="battersTableBody" class="divide-y divide-rr-border">
+              <!-- Dynamically populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- TAB 4: TOP PRESSURE BOWLERS -->
+    <!-- =================================================================== -->
+    <div id="content-bowlers" class="tab-content space-y-6 hidden">
+      
+      <!-- Filter Bar & Search -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-rr-card p-4 rounded-xl border border-rr-border">
+        <div>
+          <h3 class="font-heading text-lg font-bold text-white">Elite Pressure Bowlers Ranking (Top 12)</h3>
+          <p class="text-xs text-slate-400">Eligible pool: Min 90 pressure balls across 12+ pressure spells</p>
+        </div>
+        <div class="flex items-center space-x-3 w-full sm:w-auto">
+          <select id="bowlerTypeFilter" onchange="filterBowlersTable()" class="bg-[#070E20] border border-rr-border text-xs rounded-lg px-3 py-2 text-white focus:outline-none focus:border-rr-pink">
+            <option value="ALL">All Disciplines</option>
+            <option value="Death">Death Specialists</option>
+            <option value="Spin">Spin Controllers</option>
+            <option value="Pace">Express Pace</option>
+          </select>
+          <input type="text" id="bowlerSearch" onkeyup="filterBowlersTable()" placeholder="Search bowler..." class="bg-[#070E20] border border-rr-border text-xs rounded-lg px-3 py-2 text-white focus:outline-none focus:border-rr-pink w-full sm:w-48">
+        </div>
+      </div>
+
+      <!-- Scatter Chart: Economy vs Balls Per Wicket -->
+      <div class="bg-rr-card border border-rr-border rounded-xl p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-2">
+          <h4 class="font-heading text-md font-bold text-white">Bowling Lethality Matrix: Economy Rate vs Balls Per Wicket</h4>
+          <span class="text-xs text-slate-400">Lower on both axes is elite | Bubble size = Pressure Balls</span>
+        </div>
+        <div class="h-64">
+          <canvas id="bowlerScatterChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Bowlers Leaderboard Table -->
+      <div class="bg-rr-card border border-rr-border rounded-xl overflow-hidden shadow-sm">
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-[#081226] text-slate-400 border-b border-rr-border font-semibold uppercase tracking-wider">
+                <th class="py-3 px-3">#</th>
+                <th class="py-3 px-4">Player</th>
+                <th class="py-3 px-3">Discipline</th>
+                <th class="py-3 px-3 text-right">Score (z)</th>
+                <th class="py-3 px-3 text-right">Pressure Balls</th>
+                <th class="py-3 px-3 text-right">Economy</th>
+                <th class="py-3 px-3 text-right">Balls/Wkt</th>
+                <th class="py-3 px-3 text-right">Dot Ball %</th>
+                <th class="py-3 px-3 text-right">Death Share %</th>
+                <th class="py-3 px-3 text-right">Bootstrap %</th>
+                <th class="py-3 px-4">Strategic Fit for RR</th>
+              </tr>
+            </thead>
+            <tbody id="bowlersTableBody" class="divide-y divide-rr-border">
+              <!-- Dynamically populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- TAB 5: AUCTION WAR ROOM PLANNER -->
+    <!-- =================================================================== -->
+    <div id="content-auction" class="tab-content space-y-6 hidden">
+      
+      <!-- Interactive Squad Builder Top Banner -->
+      <div class="bg-gradient-to-r from-rr-navy via-[#0C1B3A] to-rr-card border border-rr-border rounded-xl p-5 shadow-md flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div>
+          <span class="text-xs uppercase tracking-wider font-bold text-rr-gold">Rajasthan Royals War Room Simulator</span>
+          <h2 class="text-xl font-heading font-bold text-white mt-1">IPL 2027 Auction Target Board & Purse Allocator</h2>
+          <p class="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
+            Select targets from the 4 critical tactical need categories to simulate Rajasthan Royals' IPL 2027 auction strategy. Monitor total spend against purse, ensure overseas slot compliance (max 8 overseas), and inspect the Net Pressure Rating of the squad.
+          </p>
+        </div>
+
+        <!-- Live Purse & Slot Counters -->
+        <div class="grid grid-cols-3 gap-3 shrink-0">
+          <div class="p-3 bg-[#070E20] border border-rr-border rounded-xl text-center">
+            <span class="text-[10px] text-slate-400 block uppercase font-semibold">Total Target Purse</span>
+            <span id="allocatedPurseText" class="text-2xl font-heading font-extrabold text-rr-gold">₹33.0 Cr</span>
+            <span class="text-[10px] text-slate-400 block">4 Selected</span>
+          </div>
+          <div class="p-3 bg-[#070E20] border border-rr-border rounded-xl text-center">
+            <span class="text-[10px] text-slate-400 block uppercase font-semibold">Overseas Slots</span>
+            <span id="overseasCountText" class="text-2xl font-heading font-extrabold text-rr-cyan">3 / 8</span>
+            <span class="text-[10px] text-slate-400 block">Compliant</span>
+          </div>
+          <div class="p-3 bg-[#070E20] border border-rr-border rounded-xl text-center">
+            <span class="text-[10px] text-slate-400 block uppercase font-semibold">Squad Pressure Rating</span>
+            <span id="squadZScoreText" class="text-2xl font-heading font-extrabold text-rr-success">+1.81</span>
+            <span class="text-[10px] text-slate-400 block">Top Tier</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Strategic Need Action Pillars -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Pillar 1: Death Pace -->
+        <div class="bg-rr-card border border-rr-border rounded-xl p-4 flex flex-col justify-between hover:border-rr-pink/50 transition-all">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-rr-pink">Need #1</span>
+              <span class="text-[10px] text-slate-400 bg-rr-navy px-2 py-0.5 rounded">Overseas Pace</span>
+            </div>
+            <h4 class="font-heading text-lg font-bold text-white mt-1">Death-Overs Pace</h4>
+            <p class="text-xs text-slate-400 mt-1">Directly cures RR's -0.19 runs/ball death concession.</p>
+            
+            <div class="mt-4 space-y-2">
+              <div class="p-2.5 rounded-lg bg-[#070E20] border border-rr-border">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="font-bold text-white">Mustafizur Rahman</span>
+                  <span class="text-rr-gold font-bold">₹8.5 Cr</span>
+                </div>
+                <div class="text-[11px] text-slate-400 mt-0.5">Econ 7.40 | 44% at death | LHB variation</div>
+              </div>
+              <div class="p-2.5 rounded-lg bg-[#070E20] border border-rr-border">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="font-bold text-white">Nathan Ellis</span>
+                  <span class="text-rr-gold font-bold">₹6.5 Cr</span>
+                </div>
+                <div class="text-[11px] text-slate-400 mt-0.5">Econ 7.78 | Wicket every 14.5 balls</div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-rr-border text-[11px] text-slate-300">
+            <strong>War Room Directive:</strong> Bid aggressively on Mustafizur up to 9.5 Cr; pivot to Ellis if bid inflates.
+          </div>
+        </div>
+
+        <!-- Pillar 2: Pressure Spin -->
+        <div class="bg-rr-card border border-rr-border rounded-xl p-4 flex flex-col justify-between hover:border-rr-pink/50 transition-all">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-rr-cyan">Need #2</span>
+              <span class="text-[10px] text-slate-400 bg-rr-navy px-2 py-0.5 rounded">Spin Squeeze</span>
+            </div>
+            <h4 class="font-heading text-lg font-bold text-white mt-1">Pressure Spin Enforcer</h4>
+            <p class="text-xs text-slate-400 mt-1">Replaces Ravi Bishnoi's 138th-ranked pressure struggles.</p>
+            
+            <div class="mt-4 space-y-2">
+              <div class="p-2.5 rounded-lg bg-[#070E20] border border-rr-border">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="font-bold text-white">Varun Chakravarthy</span>
+                  <span class="text-rr-gold font-bold">₹9.5 Cr</span>
+                </div>
+                <div class="text-[11px] text-slate-400 mt-0.5">Econ 7.37 | 41% dots | Indian slot</div>
+              </div>
+              <div class="p-2.5 rounded-lg bg-[#070E20] border border-rr-border">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="font-bold text-white">Noor Ahmad</span>
+                  <span class="text-rr-gold font-bold">₹4.5 Cr</span>
+                </div>
+                <div class="text-[11px] text-slate-400 mt-0.5">Econ 6.80 | +95 RV defending total</div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-rr-border text-[11px] text-slate-300">
+            <strong>War Room Directive:</strong> Varun is top Indian target; saves overseas slot for pace and finishing.
+          </div>
+        </div>
+
+        <!-- Pillar 3: Death Finisher -->
+        <div class="bg-rr-card border border-rr-border rounded-xl p-4 flex flex-col justify-between hover:border-rr-pink/50 transition-all">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-rr-gold">Need #3</span>
+              <span class="text-[10px] text-slate-400 bg-rr-navy px-2 py-0.5 rounded">Clutch Finisher</span>
+            </div>
+            <h4 class="font-heading text-lg font-bold text-white mt-1">Death Finisher / Chaser</h4>
+            <p class="text-xs text-slate-400 mt-1">Fixes Hetmyer (90th) & Parag (91st) death drop-off.</p>
+            
+            <div class="mt-4 space-y-2">
+              <div class="p-2.5 rounded-lg bg-[#070E20] border border-rr-border">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="font-bold text-white">Tim David</span>
+                  <span class="text-rr-gold font-bold">₹9.0 Cr</span>
+                </div>
+                <div class="text-[11px] text-slate-400 mt-0.5">SR 185 (205 vs pace) | 53% at death</div>
+              </div>
+              <div class="p-2.5 rounded-lg bg-[#070E20] border border-rr-border">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="font-bold text-white">Ashutosh Sharma</span>
+                  <span class="text-rr-gold font-bold">₹3.5 Cr</span>
+                </div>
+                <div class="text-[11px] text-slate-400 mt-0.5">SR 187 (217 vs pace) | Value Indian pick</div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-rr-border text-[11px] text-slate-300">
+            <strong>War Room Directive:</strong> Tim David is the proven elite; Ashutosh serves as budget Indian alternate.
+          </div>
+        </div>
+
+        <!-- Pillar 4: Middle Stabiliser -->
+        <div class="bg-rr-card border border-rr-border rounded-xl p-4 flex flex-col justify-between hover:border-rr-pink/50 transition-all">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-rr-success">Need #4</span>
+              <span class="text-[10px] text-slate-400 bg-rr-navy px-2 py-0.5 rounded">Stability No. 3/4</span>
+            </div>
+            <h4 class="font-heading text-lg font-bold text-white mt-1">Middle Stabiliser</h4>
+            <p class="text-xs text-slate-400 mt-1">Bridges powerplay aggression to death fireworks.</p>
+            
+            <div class="mt-4 space-y-2">
+              <div class="p-2.5 rounded-lg bg-[#070E20] border border-rr-border">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="font-bold text-white">Josh Inglis</span>
+                  <span class="text-rr-gold font-bold">₹6.0 Cr</span>
+                </div>
+                <div class="text-[11px] text-slate-400 mt-0.5">74% positive innings | SR 185 pace / 180 spin</div>
+              </div>
+              <div class="p-2.5 rounded-lg bg-[#070E20] border border-rr-border">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="font-bold text-white">Glenn Maxwell</span>
+                  <span class="text-rr-gold font-bold">₹7.5 Cr</span>
+                </div>
+                <div class="text-[11px] text-slate-400 mt-0.5">Tier A pool guaranteed | SR 200 at death</div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-rr-border text-[11px] text-slate-300">
+            <strong>War Room Directive:</strong> Inglis handles high-chase stress (65% in chases) with zero pace/spin bias.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Master Target Selection Table -->
+      <div class="bg-rr-card border border-rr-border rounded-xl overflow-hidden shadow-sm">
+        <div class="p-4 bg-[#081226] border-b border-rr-border flex justify-between items-center">
+          <div>
+            <h3 class="font-heading text-lg font-bold text-white">Auction Decision Matrix</h3>
+            <p class="text-xs text-slate-400">Toggle checkbox to add/remove player from the hypothetical RR 2027 recruitment plan</p>
+          </div>
+          <button onclick="resetSimulator()" class="px-3 py-1.5 bg-[#0A162E] hover:bg-rr-border border border-rr-border rounded text-xs font-semibold text-slate-300">
+            Reset to Recommended 4-Player Strategy
+          </button>
+        </div>
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-[#081226] text-slate-400 border-b border-rr-border font-semibold uppercase tracking-wider">
+                <th class="py-3 px-3 text-center">Pick</th>
+                <th class="py-3 px-4">Player</th>
+                <th class="py-3 px-3">Tactical Need</th>
+                <th class="py-3 px-3">Priority</th>
+                <th class="py-3 px-3">Slot</th>
+                <th class="py-3 px-3 text-right">Est. Price</th>
+                <th class="py-3 px-3 text-right">Pressure Score (z)</th>
+                <th class="py-3 px-5">War Room Strategic Verdict</th>
+              </tr>
+            </thead>
+            <tbody id="auctionTableBody" class="divide-y divide-rr-border">
+              <!-- Dynamically populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-[#081226] border-t border-rr-border py-4 mt-auto no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-2">
+      <div>
+        <strong class="text-white">Rajasthan Royals Proprietary Data Analysis</strong> | SupeRR Selector Season 2
+      </div>
+      <div>
+        Built with Empirical-Bayes Shrinkage, Gradient-Boosted Win Probability, and Leverage Index
+      </div>
+    </div>
+  </footer>
+
+  <!-- DATA & LOGIC SCRIPTS -->
+  <script>
+    // Tab Switching Logic
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-rr-pink', 'text-white', 'shadow-sm');
+        btn.classList.add('text-slate-300', 'hover:text-white', 'hover:bg-rr-navy');
+      });
+
+      const activeContent = document.getElementById('content-' + tabId);
+      const activeBtn = document.getElementById('tab-' + tabId);
+      if (activeContent) activeContent.classList.remove('hidden');
+      if (activeBtn) {
+        activeBtn.classList.remove('text-slate-300', 'hover:text-white', 'hover:bg-rr-navy');
+        activeBtn.classList.add('bg-rr-pink', 'text-white', 'shadow-sm');
+      }
+
+      // Resize charts when shown
+      if (tabId === 'overview' && window.sepChart) window.sepChart.resize();
+      if (tabId === 'diagnostic' && window.diagChart) window.diagChart.resize();
+      if (tabId === 'batters' && window.batScatter) window.batScatter.resize();
+      if (tabId === 'bowlers' && window.bowlScatter) window.bowlScatter.resize();
+    }
+
+    // Top Batters Raw Data
+    const battersData = [
+      { rank: 1, name: "Vaibhav Sooryavanshi", role: "Powerplay Aggressor", z: 4.15, balls: 144, sr: 206, bpd: 36, srPace: 210, srSpin: 195, cons: 70, boot: 80, fit: "Already at RR. Anchor PP around him; do not burn auction capital here." },
+      { rank: 2, name: "Abhishek Sharma", role: "Powerplay Aggressor", z: 2.40, balls: 535, sr: 181, bpd: 22, srPace: 172, srSpin: 209, cons: 67, boot: 93, fit: "Largest-sample elite opener; overlaps with RR PP strength, unlikely release." },
+      { rank: 3, name: "Josh Inglis", role: "Middle-Order Stabiliser", z: 1.78, balls: 198, sr: 183, bpd: 22, srPace: 185, srSpin: 180, cons: 74, boot: 66, fit: "Top middle-order priority (No. 3/4). Equal pace & spin mastery; 65% in chases." },
+      { rank: 4, name: "Tim David", role: "Death Finisher", z: 1.67, balls: 335, sr: 185, bpd: 18, srPace: 205, srSpin: 142, cons: 61, boot: 64, fit: "Primary finisher target! Directly remedies Hetmyer/Parag drop-off (-0.11 at death)." },
+      { rank: 5, name: "Harry Brook", role: "Middle-Order Pace Punisher", z: 1.64, balls: 175, sr: 163, bpd: 22, srPace: 209, srSpin: 118, cons: 65, boot: 54, fit: "Devastating vs pace (SR 209); weak vs spin (SR 118). Pair with spin-hitter." },
+      { rank: 6, name: "Phil Salt", role: "Powerplay Aggressor", z: 1.62, balls: 365, sr: 171, bpd: 23, srPace: 175, srSpin: 165, cons: 57, boot: 62, fit: "Pressure opener (+82 RV in chases); lower marginal value due to RR PP depth." },
+      { rank: 7, name: "Suryakumar Yadav", role: "Middle-Order Stabiliser", z: 1.51, balls: 606, sr: 174, bpd: 25, srPace: 176, srSpin: 171, cons: 65, boot: 54, fit: "Largest sample (606 balls), unmatched consistency. Certain MI retention." },
+      { rank: 8, name: "Shreyas Iyer", role: "Middle-Order Stabiliser", z: 1.41, balls: 431, sr: 151, bpd: 24, srPace: 154, srSpin: 146, cons: 54, boot: 48, fit: "Steady chasing floor (72% in chases). Anchors collapse recovery." },
+      { rank: 9, name: "Heinrich Klaasen", role: "Death Finisher", z: 1.35, balls: 290, sr: 169, bpd: 24, srPace: 158, srSpin: 188, cons: 60, boot: 40, fit: "Best against spin in dataset (SR 188). Perfect antidote to middle-overs squeeze." },
+      { rank: 10, name: "Ashutosh Sharma", role: "Death Finisher", z: 1.34, balls: 121, sr: 187, bpd: 24, srPace: 217, srSpin: 140, cons: 57, boot: 22, fit: "Budget Indian finisher (82% death balls, SR 217 vs pace, 80% chases). High upside." },
+      { rank: 11, name: "Glenn Maxwell", role: "Middle-Order Stabiliser", z: 1.75, balls: 180, sr: 200, bpd: 17, srPace: 205, srSpin: 195, cons: 62, boot: 81, fit: "Tier A free agent! Strike rate 200 at No. 4/5 + handy off-spin under pressure." },
+      { rank: 12, name: "Jos Buttler", role: "Powerplay Aggressor", z: 1.50, balls: 249, sr: 198, bpd: 28, srPace: 202, srSpin: 192, cons: 68, boot: 61, fit: "Ex-RR superstar. Handles both chase (+50 RV) and defense (+57 RV) masterfully." }
+    ];
+
+    // Top Bowlers Raw Data
+    const bowlersData = [
+      { rank: 1, name: "Mustafizur Rahman", discipline: "Death Pace", z: 2.23, balls: 407, econ: 7.40, bpw: 14.0, dots: 39.2, deathPct: 44, boot: 90, fit: "#1 Bowler in model! Solves RR's death-over gap (-0.19 RV/ball) with left-arm angle." },
+      { rank: 2, name: "Blessing Muzarabani", discipline: "Express Pace", z: 1.95, balls: 243, econ: 7.65, bpw: 16.0, dots: 37.8, deathPct: 36, boot: 70, fit: "Bargain overseas express pace. Excellent in PP and death; IPL sample small (11 balls)." },
+      { rank: 3, name: "Rashid Khan", discipline: "Spin Controller", z: 1.87, balls: 573, econ: 7.24, bpw: 15.0, dots: 34.5, deathPct: 24, boot: 64, fit: "Dual-threat phenom (Top 10 Batting & Bowling!). Fixes spin leak and lower-order hitting." },
+      { rank: 4, name: "Sunil Narine", discipline: "Spin Controller", z: 1.84, balls: 415, econ: 7.10, bpw: 23.0, dots: 39.1, deathPct: 17, boot: 58, fit: "100% IPL sample! 7.10 economy under pressure eliminates opponent middle-over acceleration." },
+      { rank: 5, name: "Jasprit Bumrah", discipline: "Death Pace", z: 1.84, balls: 464, econ: 7.33, bpw: 21.0, dots: 36.4, deathPct: 42, boot: 64, fit: "Gold standard death bowler. Mentioned for benchmark; 100% retained by MI." },
+      { rank: 6, name: "Nathan Ellis", discipline: "Death Pace", z: 1.66, balls: 290, econ: 7.78, bpw: 14.5, dots: 33.2, deathPct: 39, boot: 48, fit: "Most realistic overseas death pace target! Wicket every 14.5 balls, pairs with Archer." },
+      { rank: 7, name: "Mujeeb Ur Rahman", discipline: "Spin Controller", z: 1.62, balls: 252, econ: 6.74, bpw: 18.0, dots: 41.0, deathPct: 10, boot: 47, fit: "Elite powerplay economy (6.74); low IPL sample (4 balls), carries T20I transfer risk." },
+      { rank: 8, name: "Mahedi Hasan", discipline: "Spin Controller", z: 1.60, balls: 237, econ: 7.11, bpw: 22.0, dots: 38.5, deathPct: 9, boot: 44, fit: "Tight off-spin against LHB; no IPL experience, secondary watch-list option." },
+      { rank: 9, name: "Varun Chakravarthy", discipline: "Spin Controller", z: 1.55, balls: 482, econ: 7.37, bpw: 19.0, dots: 41.2, deathPct: 20, boot: 40, fit: "Number 1 Indian spin target! Replaces Ravi Bishnoi's poor pressure form (138th rank)." },
+      { rank: 10, name: "Nasum Ahmed", discipline: "Spin Controller", z: 1.39, balls: 130, econ: 6.60, bpw: 32.0, dots: 44.0, deathPct: 6, boot: 32, fit: "Lowest economy in dataset (6.60), high dot rate (44%), but defensive wicket threat." },
+      { rank: 11, name: "Kuldeep Yadav", discipline: "Spin Controller", z: 2.89, balls: 558, econ: 6.70, bpw: 11.1, dots: 38.0, deathPct: 34, boot: 100, fit: "+82 RV defending totals! The biggest single spin upgrade available in world cricket." },
+      { rank: 12, name: "Noor Ahmad", discipline: "Spin Controller", z: 1.46, balls: 350, econ: 6.80, bpw: 14.5, dots: 37.0, deathPct: 37, boot: 65, fit: "+95 RV defending a total. High quality wrist-spin option for a spin-dominant attack." }
+    ];
+
+    // Auction Board Master Data
+    const auctionBoardData = [
+      { id: 1, name: "Mustafizur Rahman", need: "Death-Overs Pace", priority: "Tier 1 Priority", slot: "Overseas", price: 8.5, z: 2.23, picked: true, verdict: "Target #1. Direct left-arm partner for Jofra Archer; shuts down overs 18-20." },
+      { id: 2, name: "Nathan Ellis", need: "Death-Overs Pace", priority: "Tier 1 Priority", slot: "Overseas", price: 6.5, z: 1.66, picked: false, verdict: "Highly attainable primary target if Mustafizur price goes over 10 Cr." },
+      { id: 3, name: "Blessing Muzarabani", need: "Death-Overs Pace", priority: "Fallback Option", slot: "Overseas", price: 3.0, z: 1.95, picked: false, verdict: "High-ceiling bargain overseas pick; provides raw bounce and low economy." },
+      { id: 4, name: "Varun Chakravarthy", need: "Pressure Spin Enforcer", priority: "Tier 1 Priority", slot: "Indian", price: 9.5, z: 1.55, picked: true, verdict: "Premier Indian mystery spinner; does not take overseas slot, fixes Bishnoi gap." },
+      { id: 5, name: "Noor Ahmad", need: "Pressure Spin Enforcer", priority: "Value Target", slot: "Overseas", price: 4.5, z: 1.46, picked: false, verdict: "Elite +95 RV defending totals; high upside wrist-spin at reasonable valuation." },
+      { id: 6, name: "Rashid Khan", need: "Pressure Spin Enforcer", priority: "Elite Marquee", slot: "Overseas", price: 16.0, z: 1.87, picked: false, verdict: "Dual-asset gamechanger. Solves middle squeeze and provides +93 RV chase hitting." },
+      { id: 7, name: "Tim David", need: "Death Finisher / Chaser", priority: "Tier 1 Priority", slot: "Overseas", price: 9.0, z: 1.67, picked: true, verdict: "The cleanest finisher in world cricket (SR 205 vs pace). Fixes death batting deficit." },
+      { id: 8, name: "Ashutosh Sharma", need: "Death Finisher / Chaser", priority: "Value Indian Pick", slot: "Indian", price: 3.5, z: 1.34, picked: false, verdict: "Speculative high-reward Indian finisher (SR 187, 80% chases). Low purse commitment." },
+      { id: 9, name: "Heinrich Klaasen", need: "Death Finisher / Chaser", priority: "Elite Marquee", slot: "Overseas", price: 15.0, z: 1.35, picked: false, verdict: "Demolishes spin (SR 188) and scores in first-innings defense (+28 RV). Bid aggressively." },
+      { id: 10, name: "Josh Inglis", need: "Middle-Order Stabiliser", priority: "Tier 1 Priority", slot: "Overseas", price: 6.0, z: 1.78, picked: true, verdict: "74% positive innings rate! Perfect No. 3/4 bridge between PP surge and death overs." },
+      { id: 11, name: "Glenn Maxwell", need: "Middle-Order Stabiliser", priority: "Fallback Option", slot: "Overseas", price: 7.5, z: 1.75, picked: false, verdict: "Tier A pool guarantee! SR 200 on pressure balls + off-spin pressure bowler." }
+    ];
+
+    // Populate Batters Table
+    function renderBattersTable(data) {
+      const tbody = document.getElementById('battersTableBody');
+      tbody.innerHTML = '';
+      data.forEach(b => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-[#0A162E] transition-colors";
+        tr.innerHTML = `
+          <td class="py-3 px-3 font-bold text-rr-pink text-center">${b.rank}</td>
+          <td class="py-3 px-4 font-semibold text-white">${b.name}</td>
+          <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-rr-navy text-slate-300 border border-rr-border">${b.role}</span></td>
+          <td class="py-3 px-3 text-right font-mono font-bold text-rr-cyan">${b.z.toFixed(2)}</td>
+          <td class="py-3 px-3 text-right text-slate-300">${b.balls}</td>
+          <td class="py-3 px-3 text-right font-bold ${b.sr >= 180 ? 'text-rr-gold' : 'text-slate-200'}">${b.sr}</td>
+          <td class="py-3 px-3 text-right text-slate-300">${b.bpd}</td>
+          <td class="py-3 px-3 text-right text-slate-300">${b.srPace}</td>
+          <td class="py-3 px-3 text-right text-slate-300">${b.srSpin}</td>
+          <td class="py-3 px-3 text-right text-slate-300">${b.cons}%</td>
+          <td class="py-3 px-3 text-right font-semibold ${b.boot >= 60 ? 'text-rr-success' : 'text-slate-400'}">${b.boot}%</td>
+          <td class="py-3 px-4 text-slate-400 text-[11px]">${b.fit}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterBattersTable() {
+      const role = document.getElementById('batterRoleFilter').value;
+      const query = document.getElementById('batterSearch').value.toLowerCase();
+      const filtered = battersData.filter(b => {
+        const matchesRole = (role === 'ALL' || b.role === role);
+        const matchesSearch = b.name.toLowerCase().includes(query);
+        return matchesRole && matchesSearch;
+      });
+      renderBattersTable(filtered);
+    }
+
+    // Populate Bowlers Table
+    function renderBowlersTable(data) {
+      const tbody = document.getElementById('bowlersTableBody');
+      tbody.innerHTML = '';
+      data.forEach(bw => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-[#0A162E] transition-colors";
+        tr.innerHTML = `
+          <td class="py-3 px-3 font-bold text-rr-pink text-center">${bw.rank}</td>
+          <td class="py-3 px-4 font-semibold text-white">${bw.name}</td>
+          <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-rr-navy text-slate-300 border border-rr-border">${bw.discipline}</span></td>
+          <td class="py-3 px-3 text-right font-mono font-bold text-rr-cyan">${bw.z.toFixed(2)}</td>
+          <td class="py-3 px-3 text-right text-slate-300">${bw.balls}</td>
+          <td class="py-3 px-3 text-right font-bold ${bw.econ <= 7.3 ? 'text-rr-success' : 'text-slate-200'}">${bw.econ.toFixed(2)}</td>
+          <td class="py-3 px-3 text-right text-slate-300">${bw.bpw.toFixed(1)}</td>
+          <td class="py-3 px-3 text-right text-slate-300">${bw.dots}%</td>
+          <td class="py-3 px-3 text-right font-semibold ${bw.deathPct >= 35 ? 'text-rr-pink' : 'text-slate-400'}">${bw.deathPct}%</td>
+          <td class="py-3 px-3 text-right font-semibold ${bw.boot >= 60 ? 'text-rr-success' : 'text-slate-400'}">${bw.boot}%</td>
+          <td class="py-3 px-4 text-slate-400 text-[11px]">${bw.fit}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterBowlersTable() {
+      const filter = document.getElementById('bowlerTypeFilter').value;
+      const query = document.getElementById('bowlerSearch').value.toLowerCase();
+      const filtered = bowlersData.filter(b => {
+        let matchesType = true;
+        if (filter === 'Death') matchesType = (b.deathPct >= 30);
+        else if (filter === 'Spin') matchesType = b.discipline.includes('Spin');
+        else if (filter === 'Pace') matchesType = b.discipline.includes('Pace');
+        const matchesSearch = b.name.toLowerCase().includes(query);
+        return matchesType && matchesSearch;
+      });
+      renderBowlersTable(filtered);
+    }
+
+    // Populate Auction Table & Simulator
+    function renderAuctionTable() {
+      const tbody = document.getElementById('auctionTableBody');
+      tbody.innerHTML = '';
+      auctionBoardData.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.className = `hover:bg-[#0A162E] transition-colors ${item.picked ? 'bg-rr-navy/30' : ''}`;
+        tr.innerHTML = `
+          <td class="py-3 px-3 text-center">
+            <input type="checkbox" ${item.picked ? 'checked' : ''} onchange="toggleAuctionPick(${item.id})" class="rounded border-rr-border text-rr-pink focus:ring-rr-pink w-4 h-4 cursor-pointer">
+          </td>
+          <td class="py-3 px-4 font-semibold text-white">${item.name}</td>
+          <td class="py-3 px-3 font-medium text-slate-300">${item.need}</td>
+          <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-semibold ${item.priority.includes('Tier 1') ? 'bg-rr-pink/20 text-rr-pink border border-rr-pink/30' : 'bg-rr-navy text-slate-300'}">${item.priority}</span></td>
+          <td class="py-3 px-3 font-semibold ${item.slot === 'Overseas' ? 'text-rr-cyan' : 'text-slate-300'}">${item.slot}</td>
+          <td class="py-3 px-3 text-right font-mono font-bold text-rr-gold">₹${item.price.toFixed(1)} Cr</td>
+          <td class="py-3 px-3 text-right font-mono font-bold text-white">${item.z.toFixed(2)}</td>
+          <td class="py-3 px-5 text-slate-300 text-[11px]">${item.verdict}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+      updateSimulatorKPIs();
+    }
+
+    function toggleAuctionPick(id) {
+      const target = auctionBoardData.find(x => x.id === id);
+      if (target) {
+        target.picked = !target.picked;
+        renderAuctionTable();
+      }
+    }
+
+    function resetSimulator() {
+      auctionBoardData.forEach(item => {
+        item.picked = [1, 4, 7, 10].includes(item.id); // Mustafizur, Varun, Tim David, Josh Inglis
+      });
+      renderAuctionTable();
+    }
+
+    function updateSimulatorKPIs() {
+      const selected = auctionBoardData.filter(x => x.picked);
+      const totalPurse = selected.reduce((sum, x) => sum + x.price, 0);
+      const overseas = selected.filter(x => x.slot === 'Overseas').length;
+      const avgZ = selected.length > 0 ? (selected.reduce((sum, x) => sum + x.z, 0) / selected.length) : 0;
+
+      document.getElementById('allocatedPurseText').innerText = `₹${totalPurse.toFixed(1)} Cr`;
+      document.getElementById('overseasCountText').innerText = `${overseas} / 8`;
+      document.getElementById('squadZScoreText').innerText = `+${avgZ.toFixed(2)}`;
+    }
+
+    // Initialize Charts on Window Load
+    window.onload = function() {
+      renderBattersTable(battersData);
+      renderBowlersTable(bowlersData);
+      renderAuctionTable();
+
+      // Chart 1: Pressure vs Ordinary Play Separation Chart
+      const sepCtx = document.getElementById('pressureSeparationChart').getContext('2d');
+      window.sepChart = new Chart(sepCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Balls Remaining', 'Wickets Lost (Avg)', 'Batting Win Prob %', 'Wicket Rate (% per ball)'],
+          datasets: [
+            {
+              label: 'Ordinary Balls',
+              data: [68, 2.1, 54, 5.0],
+              backgroundColor: '#1E2D4A',
+              borderColor: '#2A3C60',
+              borderWidth: 1,
+              borderRadius: 6
+            },
+            {
+              label: 'Pressure Deliveries (Top 25% LI)',
+              data: [30, 4.8, 28, 7.8],
+              backgroundColor: '#EA1A85',
+              borderColor: '#EA1A85',
+              borderWidth: 1,
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: '#CBD5E1', font: { family: 'Inter', size: 11 } }
+            }
+          },
+          scales: {
+            x: { ticks: { color: '#94A3B8' }, grid: { display: false } },
+            y: { ticks: { color: '#94A3B8' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+          }
+        }
+      });
+
+      // Chart 2: Pressure Context Distribution Donut Chart
+      const distCtx = document.getElementById('pressureDistributionChart').getContext('2d');
+      new Chart(distCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['2nd Innings Chases (61%)', '1st Innings Defending (39%)'],
+          datasets: [{
+            data: [61, 39],
+            backgroundColor: ['#EA1A85', '#004B8C'],
+            borderWidth: 0,
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          cutout: '72%'
+        }
+      });
+
+      // Chart 3: RR Squad Diagnostics Diverging Bar Chart
+      const diagCtx = document.getElementById('rrDiagnosticChart').getContext('2d');
+      window.diagChart = new Chart(diagCtx, {
+        type: 'bar',
+        data: {
+          labels: [
+            'Batting: Powerplay (1-6)',
+            'Bowling: Powerplay (1-6)',
+            'Batting: Middle Overs (7-15)',
+            'Bowling: Middle Overs (7-15)',
+            'Batting: Death Overs (16-20)',
+            'Bowling: Spin Attack Under Pressure',
+            'Bowling: Death Overs (16-20)'
+          ],
+          datasets: [{
+            label: 'Net Surplus / Deficit vs League Average (Runs/Ball)',
+            data: [0.19, -0.01, -0.06, -0.06, -0.10, -0.16, -0.19],
+            backgroundColor: [
+              '#10B981', // green PP batting
+              '#64748B', // neutral PP bowling
+              '#F59E0B', // amber mid bat
+              '#F59E0B', // amber mid bowl
+              '#EF4444', // red death bat
+              '#EF4444', // red spin bowl
+              '#DC2626'  // bright red death bowl
+            ],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(255,255,255,0.08)' },
+              ticks: { color: '#94A3B8' }
+            },
+            y: {
+              grid: { display: false },
+              ticks: { color: '#E2E8F0', font: { weight: 'bold' } }
+            }
+          }
+        }
+      });
+
+      // Chart 4: Batters Scatter Plot (SR vs Run Value)
+      const batScatterCtx = document.getElementById('batterScatterChart').getContext('2d');
+      window.batScatter = new Chart(batScatterCtx, {
+        type: 'scatter',
+        data: {
+          datasets: [{
+            label: 'Top Pressure Batters',
+            data: battersData.map(b => ({
+              x: b.sr,
+              y: b.z,
+              r: Math.min(18, Math.max(7, Math.sqrt(b.balls) * 0.7)),
+              player: b.name,
+              role: b.role
+            })),
+            backgroundColor: '#EA1A85',
+            hoverBackgroundColor: '#00D2FF'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  const p = ctx.raw;
+                  return `${p.player} (${p.role}): SR ${p.x}, Score ${p.y.toFixed(2)}`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: { display: true, text: 'Pressure Strike Rate', color: '#94A3B8' },
+              ticks: { color: '#94A3B8' },
+              grid: { color: 'rgba(255,255,255,0.05)' }
+            },
+            y: {
+              title: { display: true, text: 'Overall Composite Pressure Score (z)', color: '#94A3B8' },
+              ticks: { color: '#94A3B8' },
+              grid: { color: 'rgba(255,255,255,0.05)' }
+            }
+          }
+        }
+      });
+
+      // Chart 5: Bowlers Scatter Plot (Economy vs Balls per Wicket)
+      const bowlScatterCtx = document.getElementById('bowlerScatterChart').getContext('2d');
+      window.bowlScatter = new Chart(bowlScatterCtx, {
+        type: 'scatter',
+        data: {
+          datasets: [{
+            label: 'Top Pressure Bowlers',
+            data: bowlersData.map(bw => ({
+              x: bw.econ,
+              y: bw.bpw,
+              r: Math.min(18, Math.max(7, Math.sqrt(bw.balls) * 0.7)),
+              player: bw.name,
+              disc: bw.discipline
+            })),
+            backgroundColor: '#00D2FF',
+            hoverBackgroundColor: '#EA1A85'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  const p = ctx.raw;
+                  return `${p.player} (${p.disc}): Econ ${p.x.toFixed(2)}, Balls/Wkt ${p.y.toFixed(1)}`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: { display: true, text: 'Pressure Economy Rate (Lower is Better)', color: '#94A3B8' },
+              ticks: { color: '#94A3B8' },
+              grid: { color: 'rgba(255,255,255,0.05)' }
+            },
+            y: {
+              title: { display: true, text: 'Balls Per Wicket (Lower is Better)', color: '#94A3B8' },
+              ticks: { color: '#94A3B8' },
+              grid: { color: 'rgba(255,255,255,0.05)' }
+            }
+          }
+        }
+      });
+
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+Metric_Category,Metric_Name,Value,Unit,Benchmark,Insight
+Data Scale,Total Deliveries Analyzed,184944,Balls,Post-cleaning (2022-2026),"804 clean matches (380 IPL/T20, 424 T20I). Excluded DLS, ties & super overs."
+Data Scale,Total Matches,804,Matches,867 Raw matches,Hygiene filter removed 25 rain-affected & 41 no-result matches.
+Pressure Definition,Pressure Deliveries,46236,Balls,25.0% of all balls,Top quartile (75th percentile) of Leverage Index (LI >= 0.0209).
+Pressure Definition,Leverage Swing / Ball,3.56,Win-Prob %,0.95% on ordinary balls,Pressure balls carry 3.8x higher win probability swing per delivery.
+Pressure Definition,Wicket Probability,5.86,% per ball,5.45% on ordinary balls,Wicket hazard escalates by 43-56% during pressure phases.
+Pressure Definition,Chase Share,61.0,% of balls,47.0% on ordinary balls,2nd innings run chases generate the highest volume of pressure deliveries.
+Model Accuracy,Win Prob Model AUC (Chase),0.89,AUC,0.50 Random Guess,Gradient-boosted match state model accurately prices win probability swings.
+Model Accuracy,Win Prob Model AUC (1st Inns),0.68,AUC,0.50 Random Guess,"Leans on stage, collapse index, and tempo deviation from par score."
+Statistical Rigor,Split-Half Reliability (rho),0.29,Spearman Rho,-0.12 Naive pressure,Empirical-Bayes shrinkage (K=400) ensures ratings repeat across independent halves.
+Eligibility Cut-off,Eligible Batter Pool,93,Players,Min 120 pressure balls,93 batters qualified across 12+ pressure innings.
+Eligibility Cut-off,Eligible Bowler Pool,137,Players,Min 90 pressure balls,137 bowlers qualified across 12+ pressure spells.
